@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+</head>
+<body>
+<div sec:authorize="isAuthenticated()">
+    <h2 align="center"><span sec:authentication="name"></span>，你好，你是
+        <span sec:authentication="principal.authorities"></span></h2>
+</div>
+<div sec:authorize="!isAuthenticated()">
+    <h2 align="center">游客你好<a th:href="@{/userlogin}">请登录</a></h2>
+</div>
+
+<div sec:authorize="isAuthenticated()">
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="注销"></form>
+</div>
+
+
+<h3 sec:authorize="isAuthenticated()">VIP专区</h3>
+<ul>
+    <li sec:authorize="hasRole('VIP1')"><a th:href="@{/level1/1}">VIP1专区</a></li>
+    <li sec:authorize="hasRole('VIP2')"><a th:href="@{/level2/2}">VIP2专区</a></li>
+    <li sec:authorize="hasRole('VIP3')"><a th:href="@{/level3/3}">VIP3专区</a></li>
+</ul>
+</body>
+</html>
