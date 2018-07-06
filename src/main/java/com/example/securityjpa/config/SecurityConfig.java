@@ -1,61 +1,46 @@
 package com.example.securityjpa.config;
 
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.example.securityjpa.handler.CustomAccessDeniedHandler;
-import com.example.securityjpa.handler.myPassWordEncoder;
 import com.example.securityjpa.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import javax.sql.DataSource;
 
 /**
  *
  * @author: BaoZhou
  * @date : 2018/7/4 17:15
  */
-@EnableWebSecurity
-@Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /**
-     * @return 注入自定义认证类
-     */
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     UserDetailsService service()
     {
         return new UserService();
     }
 
-    @Autowired
-    private DataSource druid(){
-        return DruidDataSourceBuilder.create().build();
+    public SecurityConfig() {
+        super(true);
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // ensure the passwords are encoded properly
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        auth
-                .jdbcAuthentication()
-                .dataSource(druid())
-                .withDefaultSchema()
-                .withUser(users.username("user").password("password").roles("VIP1"))
-                .withUser(users.username("admin").password("password").roles("VIP1","VIP2"));
+    /**
+     * 注入自定义认证类
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(service());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         /*匹配所有路径的*/
-        http.authorizeRequests().antMatchers("/").permitAll()
+        http
+                .csrf()
+                .disable()
+                .authorizeRequests().antMatchers("/").permitAll()
                 /*level1路径下需要VIP1身份才能访问*/
                 .antMatchers("/level1/**").hasRole("VIP1")
                 /*level1路径下需要VIP2身份才能访问*/
@@ -90,15 +75,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 /*设置记住我参数*/
                 .rememberMeParameter("remember");
-    }
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        auth
-
-                .userDetailsService(service())
-                .passwordEncoder(new myPassWordEncoder());
-
-
     }
 }
