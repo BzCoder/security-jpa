@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.Map;
  * @author: BaoZhou
  * @date : 2018/7/4 17:15
  */
-
+@Configuration
 public class DruidConfig {
     @ConfigurationProperties(prefix = "spring.datasource")
     @Bean

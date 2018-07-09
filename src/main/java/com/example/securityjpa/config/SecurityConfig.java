@@ -5,7 +5,6 @@ import com.example.securityjpa.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.expression.SecurityExpressionOperations;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,11 +21,6 @@ import org.springframework.security.web.access.expression.WebSecurityExpressionR
  * @date : 2018/7/4 17:15
  */
 @EnableWebSecurity
-/**
- * 使用@EnableGlobalMethodSecurity(prePostEnabled = true)
- * 这个注解，可以开启security的注解，我们可以在需要控制权限的方法上面使用@PreAuthorize，@PreFilter这些注解。
- */
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     UserDetailsService getServiceDetail() {
@@ -65,9 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         /*匹配所有路径的*/
-        http.
-                authorizeRequests().
-                antMatchers("/").permitAll()
+        http
+                /*关闭跨站支持*/
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/druid/**").permitAll()
                 /*level1路径下需要VIP1身份才能访问*/
                 .antMatchers("/level1/**").hasRole("VIP1")
                 /*level1路径下需要VIP2身份才能访问*/
