@@ -11,7 +11,7 @@
  Target Server Version : 80011
  File Encoding         : 65001
 
- Date: 06/07/2018 22:10:55
+ Date: 09/07/2018 14:57:32
 */
 
 SET NAMES utf8mb4;
@@ -71,8 +71,8 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'user1', '123');
-INSERT INTO `users` VALUES (2, 'user2', '123');
+INSERT INTO `users` VALUES (1, 'user1', '$2a$10$AbRFV0e/kCpqBwYiZrbeiOvHSrOwRF8Bs5soevklA.vaK7K3uROci');
+INSERT INTO `users` VALUES (2, 'user2', '$2a$10$iIZZeX54UEO04lLuRZtmnes4pzPvLDw0iQPnj9XzFmmLI121hgrem');
 INSERT INTO `users` VALUES (3, 'user3', '123');
 
 SET FOREIGN_KEY_CHECKS = 1;
