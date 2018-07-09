@@ -27,7 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserService();
     }
 
-
+    /**
+     * 去除身份前缀，SpringSecurity会默认在数据库中取得的身份数据前加上ROLE_前缀
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.expressionHandler(new DefaultWebSecurityExpressionHandler() {
@@ -41,6 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         });
     }
 
+    /**
+     * 添加机密方法，这里选择的是BCryptPasswordEncoder
+     * 数据库中也需要存储BCryptPasswordEncoder加密后的密码
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -60,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         /*匹配所有路径的*/
         http
-                /*关闭跨站支持*/
+                /*关闭跨站支持,不关闭的话，无法登陆Druid监控页面*/
                 .csrf()
                 .disable()
                 .authorizeRequests()
@@ -86,7 +92,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                定制了登录页面后
                登录页面地址的POST请求就是登录请求，可以用过loginProcessingUrl自定义
                */
-
                 .and()
                 /*开启注销功能,访问/logout并清空session*/
                 .logout()
